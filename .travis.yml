@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t tonec/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run tonec/react-test npm run test --coverage --watchAll=false
+
+after_success:
+  - docker build -t tonec/multi-client ./client
+  - docker build -t tonec/multi-nginx ./nginx
+  - docker build -t tonec/multi-server ./server
+  - docker build -t tonec/multi-worker ./worker
+
+  # Login and push to Docker Hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push tonec/multi-client
+  - docker push tonec/multi-nginx
+  - docker push tonec/multi-server
+  - docker push tonec/multi-worker
