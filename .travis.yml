@@ -6,7 +6,7 @@ before_install:
   - docker build -t tonec/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run tonec/react-test npm run test --coverage --watchAll=false
+  - docker run tonec/react-test npm run test -- --coverage --watchAll=false
 
 after_success:
   - docker build -t tonec/multi-client ./client
